@@ -1,0 +1,114 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 92,
+      "width": 364
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "0px",
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.User.userName"
+                  },
+                  "type": "property"
+                },
+                "persistent": true
+              }
+            },
+            "props": {
+              "style": {
+                "fontSize": 20,
+                "fontWeight": "bold",
+                "textAlign": "right"
+              },
+              "text": "Sachin"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Label_0"
+            },
+            "position": {
+              "basis": "0px",
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.User.Role"
+                  },
+                  "type": "property"
+                },
+                "persistent": true
+              }
+            },
+            "props": {
+              "style": {
+                "fontSize": 12,
+                "textAlign": "right"
+              },
+              "text": "Administrator"
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "FlexContainer"
+        },
+        "position": {
+          "basis": "0px",
+          "grow": 1
+        },
+        "props": {
+          "alignItems": "flex-end",
+          "direction": "column",
+          "justify": "flex-end"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "meta": {
+          "name": "Image"
+        },
+        "position": {
+          "basis": "30px"
+        },
+        "props": {
+          "fit": {
+            "mode": "percent"
+          },
+          "source": "/system/images/Builtin/icons/48/businessman2.png",
+          "style": {
+            "borderBottomLeftRadius": 20,
+            "borderBottomRightRadius": 20,
+            "borderTopLeftRadius": 20,
+            "borderTopRightRadius": 20,
+            "marginRight": 7
+          }
+        },
+        "type": "ia.display.image"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "type": "ia.container.flex"
+  }
+}

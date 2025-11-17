@@ -1,0 +1,16 @@
+{
+  "scope": "A",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "data.bin"
+  ],
+  "attributes": {
+    "lastModificationSignature": "abf0a136c35feb6451245a973ecc8a1efecb9253da4aa4546fb7d5d90bc21d60",
+    "lastModification": {
+      "actor": "Sachin",
+      "timestamp": "2025-11-14T08:59:28Z"
+    }
+  }
+}

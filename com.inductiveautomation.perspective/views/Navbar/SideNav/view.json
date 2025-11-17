@@ -1,0 +1,326 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 874,
+      "width": 290
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\tif self.session.props.locale \u003d\u003d \u0027en-US\u0027:\n\t\tself.session.props.locale \u003d \u0027es\u0027\n\telse:\n\t\tself.session.props.locale \u003d \u0027en-US\u0027\n\tsystem.perspective.closePopup(\u0027\u0027)"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        },
+        "meta": {
+          "name": "Image"
+        },
+        "position": {
+          "height": 0.1201,
+          "width": 0.8448,
+          "x": 0.0741
+        },
+        "props": {
+          "fit": {
+            "mode": "contain"
+          },
+          "source": "/system/images/Imported/pentair-logo-web.svg"
+        },
+        "type": "ia.display.image"
+      },
+      {
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\tsystem.perspective.closePopup(\u0027\u0027)"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        },
+        "meta": {
+          "name": "MenuOptions"
+        },
+        "position": {
+          "height": 0.8,
+          "width": 1,
+          "y": 0.15
+        },
+        "props": {
+          "items": [
+            {
+              "body": {
+                "height": "auto",
+                "style": {
+                  "classes": "",
+                  "margin": "10px"
+                },
+                "useDefaultViewHeight": false,
+                "useDefaultViewWidth": false,
+                "viewParams": {},
+                "viewPath": "Navbar/SPQDCC/SPQDCC"
+              },
+              "expanded": false,
+              "header": {
+                "content": {
+                  "style": {
+                    "classes": "",
+                    "paddingLeft": 1
+                  },
+                  "text": "SPQDCC\n",
+                  "type": "text",
+                  "useDefaultViewHeight": false,
+                  "useDefaultViewWidth": false,
+                  "viewParams": {
+                    "icon": "material/dashboard",
+                    "name": "Dashboard"
+                  },
+                  "viewPath": "SideNav/AccordionHeader"
+                },
+                "height": "47px",
+                "reverse": true,
+                "style": {
+                  "classes": "Accordion/AccordionTab"
+                },
+                "toggle": {
+                  "collapsedIcon": {
+                    "color": "",
+                    "path": "material/expand_more",
+                    "style": {
+                      "classes": ""
+                    }
+                  },
+                  "enabled": true,
+                  "expandedIcon": {
+                    "color": "",
+                    "path": "material/expand_less",
+                    "style": {
+                      "classes": ""
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "body": {
+                "height": "auto",
+                "style": {
+                  "classes": "",
+                  "margin": "16px"
+                },
+                "useDefaultViewHeight": false,
+                "useDefaultViewWidth": false,
+                "viewParams": {},
+                "viewPath": "SideNav/AssetLinks"
+              },
+              "expanded": false,
+              "header": {
+                "content": {
+                  "style": {
+                    "classes": "",
+                    "paddingLeft": 1
+                  },
+                  "text": "Dashboard",
+                  "type": "view",
+                  "useDefaultViewHeight": false,
+                  "useDefaultViewWidth": false,
+                  "viewParams": {
+                    "icon": "material/library_books",
+                    "name": "Assets"
+                  },
+                  "viewPath": "SideNav/AccordionHeader"
+                },
+                "height": "47px",
+                "reverse": true,
+                "style": {
+                  "classes": "Accordion/AccordionTab"
+                },
+                "toggle": {
+                  "collapsedIcon": {
+                    "color": "",
+                    "path": "material/expand_more",
+                    "style": {
+                      "classes": ""
+                    }
+                  },
+                  "enabled": true,
+                  "expandedIcon": {
+                    "color": "",
+                    "path": "material/expand_less",
+                    "style": {
+                      "classes": ""
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "body": {
+                "height": "auto",
+                "style": {
+                  "classes": "",
+                  "margin": "16px"
+                },
+                "useDefaultViewHeight": false,
+                "useDefaultViewWidth": false,
+                "viewParams": {},
+                "viewPath": ""
+              },
+              "expanded": false,
+              "header": {
+                "content": {
+                  "style": {
+                    "classes": "",
+                    "paddingLeft": 1
+                  },
+                  "text": "Dashboard",
+                  "type": "view",
+                  "useDefaultViewHeight": false,
+                  "useDefaultViewWidth": false,
+                  "viewParams": {
+                    "icon": "material/notifications",
+                    "link": "/andon",
+                    "name": "Andon"
+                  },
+                  "viewPath": "SideNav/AccordionHeader"
+                },
+                "height": "47px",
+                "reverse": true,
+                "style": {
+                  "classes": "Accordion/AccordionTab"
+                },
+                "toggle": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "body": {
+                "height": "auto",
+                "style": {
+                  "classes": "",
+                  "margin": "16px"
+                },
+                "useDefaultViewHeight": false,
+                "useDefaultViewWidth": false,
+                "viewParams": {},
+                "viewPath": "SideNav/ScheduleLinks"
+              },
+              "expanded": false,
+              "header": {
+                "content": {
+                  "style": {
+                    "classes": "",
+                    "paddingLeft": 1
+                  },
+                  "text": "Dashboard",
+                  "type": "view",
+                  "useDefaultViewHeight": false,
+                  "useDefaultViewWidth": false,
+                  "viewParams": {
+                    "icon": "material/calendar_today",
+                    "name": "Scheduling"
+                  },
+                  "viewPath": "SideNav/AccordionHeader"
+                },
+                "height": "47px",
+                "reverse": true,
+                "style": {
+                  "classes": "Accordion/AccordionTab"
+                },
+                "toggle": {
+                  "collapsedIcon": {
+                    "color": "",
+                    "path": "material/expand_more",
+                    "style": {}
+                  },
+                  "enabled": true,
+                  "expandedIcon": {
+                    "color": "",
+                    "path": "material/expand_less",
+                    "style": {}
+                  }
+                }
+              }
+            },
+            {
+              "body": {
+                "height": "auto",
+                "style": {
+                  "classes": "",
+                  "margin": "16px"
+                },
+                "useDefaultViewHeight": false,
+                "useDefaultViewWidth": false,
+                "viewParams": {},
+                "viewPath": "SideNav/SettingsLinks"
+              },
+              "expanded": false,
+              "header": {
+                "content": {
+                  "style": {
+                    "classes": "",
+                    "paddingLeft": 1
+                  },
+                  "text": "Dashboard",
+                  "type": "view",
+                  "useDefaultViewHeight": false,
+                  "useDefaultViewWidth": false,
+                  "viewParams": {
+                    "icon": "material/settings",
+                    "name": "Settings"
+                  },
+                  "viewPath": "SideNav/AccordionHeader"
+                },
+                "height": "47px",
+                "reverse": true,
+                "style": {
+                  "classes": "Accordion/AccordionTab"
+                },
+                "toggle": {
+                  "collapsedIcon": {
+                    "color": "",
+                    "path": "material/expand_more",
+                    "style": {}
+                  },
+                  "enabled": true,
+                  "expandedIcon": {
+                    "color": "",
+                    "path": "material/expand_less",
+                    "style": {}
+                  }
+                }
+              }
+            }
+          ],
+          "style": {
+            "backgroundColor": "#FFFFFF",
+            "borderStyle": "none"
+          },
+          "unusedSpaceStyle": {
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        "type": "ia.display.accordion"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "mode": "percent"
+    },
+    "type": "ia.container.coord"
+  }
+}
