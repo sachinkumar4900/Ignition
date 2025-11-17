@@ -6,15 +6,15 @@
     "children": [
       {
         "meta": {
-          "name": "IFrame"
+          "name": "Image"
         },
         "position": {
           "basis": "800px"
         },
         "props": {
-          "src": "https://example.com/"
+          "source": "/system/images/sample-images/layouts/scrollable-background.png"
         },
-        "type": "ia.display.iframe"
+        "type": "ia.display.image"
       }
     ],
     "meta": {
