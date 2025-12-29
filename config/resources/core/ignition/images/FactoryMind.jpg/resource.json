@@ -1,0 +1,21 @@
+{
+  "scope": "A",
+  "description": "",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "FactoryMind.jpg"
+  ],
+  "attributes": {
+    "width": 853,
+    "format": "JPEG",
+    "lastModification": {
+      "actor": "admin_IoT_Lab",
+      "timestamp": "2025-12-16T04:42:31Z"
+    },
+    "size": 79138,
+    "lastModificationSignature": "ffd96f1c5605773be9e4f7784db7f184352e3081807fac8c48a16b7b10564a1f",
+    "height": 1280
+  }
+}

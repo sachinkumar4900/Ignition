@@ -1,0 +1,6 @@
+SELECT
+  DateTime,
+  WATER_CONSUMED AS WATER_CONSUMED
+FROM
+  CONSUMPTION
+WHERE DateTime between :StartDate and :EndDate

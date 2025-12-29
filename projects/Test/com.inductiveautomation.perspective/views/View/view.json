@@ -1,0 +1,408 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {},
+  "root": {
+    "children": [
+      {
+        "events": {
+          "component": {
+            "onDeleteEvent": {
+              "config": {
+                "script": "\t\t# Get the list of scheduled events\n\tscheduled \u003d self.props.scheduledEvents\n\t\n\t# Get the ID of the event to delete\n\tevent_id \u003d event.eventId\n\titem_id \u003d event.itemId\n\t\n\t# Run the Named Query to update and delete from the database\n\tparams \u003d {\"eventId\": event_id}\n#\tsystem.db.runNamedQuery(\"UpdateRequestStatus\", params)  # Named Query: update Request set Status \u003d \u0027Slot Not Available\u0027 where RID \u003d :eventId\n\tsystem.db.runNamedQuery(\"DeleteSchedule\", params)       # Named Query: delete from Schedules where eventId \u003d :eventId\n\t\n\t# Remove the event from the component\u0027s props\n\tself.props.scheduledEvents \u003d [e for e in scheduled if not (e[\u0027eventId\u0027] \u003d\u003d event_id and e[\u0027itemId\u0027] \u003d\u003d item_id)]"
+              },
+              "scope": "G",
+              "type": "script"
+            },
+            "onResizeEvent": {
+              "config": {
+                "script": "\t# Get selected event details\n\teventId \u003d self.props.selectedEvent.eventId\n\titemId \u003d self.props.selectedEvent.itemId\n\t\n\t# Step 1: Get the original startDate and endDate from the database\n\tquery \u003d \"SELECT startDate, endDate FROM Schedules WHERE eventId \u003d ?\"\n\teventData \u003d system.db.runPrepQuery(query, [eventId])[0]\n\toriginalStartDate \u003d eventData[\u0027startDate\u0027]\n\toriginalEndDate \u003d eventData[\u0027endDate\u0027]\n\t\n\t# Step 2: Calculate newEndDate as originalEndDate + 15 minutes\n\tnewEndDate \u003d system.date.addMinutes(originalEndDate, 60)\n\t\n\t# Step 3: Update the resized task\u0027s endDate\n\tupdateMain \u003d \"UPDATE Schedules SET endDate \u003d ? WHERE eventId \u003d ?\"\n\tsystem.db.runPrepUpdate(updateMain, [newEndDate, eventId])\n\tupdateMain \u003d \"UPDATE Request SET EDateTime \u003d ? WHERE RID \u003d ?\"\n\tsystem.db.runPrepUpdate(updateMain, [newEndDate, eventId])\n\t\n\t# Step 4: Get all tasks on the same date and itemId, ordered by startDate\n\teventDate \u003d system.date.format(originalStartDate, \"yyyy-MM-dd\")\n\tqueryTasks \u003d \"\"\"\n\tSELECT eventId, startDate, endDate \n\tFROM Schedules \n\tWHERE itemId \u003d ? \n\t  AND eventId !\u003d ? \n\t  AND CONVERT(date, startDate) \u003d ? \n\tORDER BY startDate\n\t\"\"\"\n\ttasks \u003d system.db.runPrepQuery(queryTasks, [itemId, eventId, eventDate])\n\t\n\t# Step 5: Shift only those tasks that start at originalEndDate and recursively shift others to avoid overlap\n\tshiftMinutes \u003d 60\n\tcurrentEnd \u003d newEndDate\n\tfor task in tasks:\n\t    if task[\u0027startDate\u0027] \u003d\u003d originalEndDate or task[\u0027startDate\u0027] \u003c currentEnd:\n\t        # Overlap detected or direct dependency\n\t        newStart \u003d system.date.addMinutes(task[\u0027startDate\u0027], shiftMinutes)\n\t        newEnd \u003d system.date.addMinutes(task[\u0027endDate\u0027], shiftMinutes)\n\t        updateTask \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\t        system.db.runPrepUpdate(updateTask, [newStart, newEnd, task[\u0027eventId\u0027]])\n\t        updateTasks \u003d \"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\"\n\t        system.db.runPrepUpdate(updateTasks, [newStart, newEnd, task[\u0027eventId\u0027]])\n\t        currentEnd \u003d newEnd  # Update currentEnd to check for next overlaps\n\t    else:\n\t        break  # No overlap, stop shifting\n\t        \n#\t        \n## Get selected event details\n#eventId \u003d self.props.selectedEvent.eventId\n#itemId \u003d self.props.selectedEvent.itemId\n#\n## Step 1: Get the original startDate and endDate from the database\n#query \u003d \"SELECT startDate, endDate FROM Schedules WHERE eventId \u003d ?\"\n#eventData \u003d system.db.runPrepQuery(query, [eventId])[0]\n#originalStartDate \u003d eventData[\u0027startDate\u0027]\n#originalEndDate \u003d eventData[\u0027endDate\u0027]\n#\n## Step 2: Calculate newEndDate as originalEndDate + 15 minutes\n#newEndDate \u003d system.date.addMinutes(originalEndDate, 15)\n#\n## Step 3: Update the resized task\u0027s endDate\n#updateMain \u003d \"UPDATE Schedules SET endDate \u003d ? WHERE eventId \u003d ?\"\n#system.db.runPrepUpdate(updateMain, [newEndDate, eventId])\n#\n## Step 4: Shift only those tasks that:\n## - Are on the same date\n## - Have startDate equal to originalEndDate\n## - Belong to the same itemId\n#updateOthers \u003d \"\"\"\n#UPDATE Schedules \n#SET startDate \u003d DATEADD(MINUTE, 15, startDate), \n#    endDate \u003d DATEADD(MINUTE, 15, endDate) \n#WHERE itemId \u003d ? \n#  AND eventId !\u003d ? \n#  AND CONVERT(date, startDate) \u003d ? \n#  AND startDate \u003d ?\n#\"\"\"\n#eventDate \u003d system.date.format(originalStartDate, \"yyyy-MM-dd\")\n#system.db.runPrepUpdate(updateOthers, [itemId, eventId, eventDate, originalEndDate])"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          },
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\t\t# Get current state\n\teventState \u003d self.view.params.task1\n\tclickedId \u003d self.props.selectedEvent[\u0027eventId\u0027]  # Assuming \u0027event\u0027 is the clicked event object\n\tself.view.params.item \u003d self.props.selectedEvent[\u0027itemId\u0027]\n\t# Update click count and store IDs\n\tif eventState[\u0027clickCount\u0027] \u003d\u003d 0:\n\t    self.view.params.task1 \u003d {\n\t        \"firstId\": clickedId,\n\t        \"secondId\": None,\n\t        \"clickCount\": 1\n\t    }\n\telif eventState[\u0027clickCount\u0027] \u003d\u003d 1:\n\t    self.view.params.task1 \u003d {\n\t        \"firstId\": eventState[\u0027firstId\u0027],\n\t        \"secondId\": clickedId,\n\t        \"clickCount\": 2\n\t    }\n\telse:\n\t    # Reset after 2 clicks\n\t    self.view.params.task1 \u003d {\n\t        \"firstId\": clickedId,\n\t        \"secondId\": None,\n\t        \"clickCount\": 1\n\t    }"
+              },
+              "scope": "G",
+              "type": "script"
+            },
+            "onDoubleClick": {
+              "config": {
+                "draggable": false,
+                "id": "yiKlMo63",
+                "modal": false,
+                "overlayDismiss": false,
+                "resizable": true,
+                "showCloseIcon": false,
+                "type": "open",
+                "viewParams": {
+                  "eventId": "{/root/EquipmentSchedule.props.selectedEvent.eventId}"
+                },
+                "viewPath": "Detailspopup",
+                "viewportBound": false
+              },
+              "scope": "C",
+              "type": "popup"
+            },
+            "onSelect": {
+              "config": {
+                "script": "\t\t# Assume you have the IDs of the two tasks to swap\n\ttask1_id \u003d self.props.selectedEvent.eventId\n\ttask2_id \u003d self.props.selectedEvent.eventId\n\t\n\t# Step 1: Fetch startDate and endDate of both tasks\n\tquery \u003d \"SELECT eventId, startDate, endDate FROM Schedules WHERE eventId IN (?, ?)\"\n\ttasks \u003d system.db.runPrepQuery(query, [task1_id, task2_id])\n\t\n\tif len(tasks) !\u003d 2:\n\t    system.perspective.print(\"Error: One or both tasks not found.\")\n\telse:\n\t    # Extract task data\n\t    task1 \u003d tasks[0] if tasks[0][\u0027eventId\u0027] \u003d\u003d task1_id else tasks[1]\n\t    task2 \u003d tasks[1] if tasks[0][\u0027eventId\u0027] \u003d\u003d task1_id else tasks[0]\n\t\n\t    # Calculate durations\n\t    duration1 \u003d system.date.getTime(task1[\u0027endDate\u0027]) - system.date.getTime(task1[\u0027startDate\u0027])\n\t    duration2 \u003d system.date.getTime(task2[\u0027endDate\u0027]) - system.date.getTime(task2[\u0027startDate\u0027])\n\t\n\t    # Swap startDates\n\t    newStart1 \u003d task2[\u0027startDate\u0027]\n\t    newStart2 \u003d task1[\u0027startDate\u0027]\n\t\n\t    # Calculate new endDates\n\t    newEnd1 \u003d system.date.addMillis(newStart1, duration1)\n\t    newEnd2 \u003d system.date.addMillis(newStart2, duration2)\n\t\n\t    # Step 2: Update both tasks in the database\n\t    updateQuery \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\t    system.db.runPrepUpdate(updateQuery, [newStart1, newEnd1, task1_id])\n\t    system.db.runPrepUpdate(updateQuery, [newStart2, newEnd2, task2_id])"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        },
+        "meta": {
+          "name": "EquipmentSchedule"
+        },
+        "position": {
+          "height": 0.4033,
+          "width": 0.9837,
+          "x": 0.0062,
+          "y": 0.068
+        },
+        "propConfig": {
+          "props.dateRange.endDate": {
+            "binding": {
+              "config": {
+                "expression": "addDays(now(),5)"
+              },
+              "type": "expr"
+            }
+          },
+          "props.dateRange.startDate": {
+            "binding": {
+              "config": {
+                "expression": "now()"
+              },
+              "transforms": [
+                {
+                  "code": "\tfrom java.util import Calendar\n\tcal \u003d Calendar.getInstance()\n\tcal.set(Calendar.HOUR_OF_DAY,6)\n\tcal.set(Calendar.MINUTE,0)\n\tcal.set(Calendar.SECOND,0)\n\tcal.set(Calendar.MILLISECOND,0)\n\treturn cal.getTime()",
+                  "type": "script"
+                }
+              ],
+              "type": "expr"
+            }
+          },
+          "props.deleteEnabled": {
+            "binding": {
+              "config": {
+                "expression": "if({session.props.auth.user.roles[0]} \u003d \u0027Administrator\u0027,true,false)"
+              },
+              "type": "expr"
+            }
+          },
+          "props.items": {
+            "binding": {
+              "config": {
+                "polling": {
+                  "enabled": true,
+                  "rate": "3"
+                },
+                "queryPath": "SchedulerNames",
+                "returnFormat": "json"
+              },
+              "type": "query"
+            }
+          },
+          "props.scheduledEvents": {
+            "binding": {
+              "config": {
+                "polling": {
+                  "enabled": true,
+                  "rate": "3"
+                },
+                "queryPath": "join1-EmpReq",
+                "returnFormat": "json"
+              },
+              "type": "query"
+            },
+            "persistent": false
+          }
+        },
+        "props": {
+          "dateRange": {},
+          "downtimeEvents": "",
+          "progressBar": {
+            "enabled": false
+          },
+          "selectedEvent": {
+            "eventId": 347,
+            "itemId": 26
+          },
+          "style": {
+            "borderBottomLeftRadius": 10,
+            "borderBottomRightRadius": 10,
+            "borderStyle": "solid",
+            "borderTopLeftRadius": 10,
+            "borderTopRightRadius": 10,
+            "outlineStyle": "solid",
+            "paddingBottom": 2,
+            "paddingLeft": 2,
+            "paddingRight": 2,
+            "paddingTop": 2
+          }
+        },
+        "type": "ia.display.equipmentschedule"
+      },
+      {
+        "meta": {
+          "name": "Label"
+        },
+        "position": {
+          "height": 0.0564,
+          "width": 0.1177,
+          "x": 0.3922,
+          "y": 0.0074
+        },
+        "props": {
+          "text": "Add New Resource",
+          "textStyle": {
+            "color": "#00AC00",
+            "fontFamily": "serif",
+            "fontStyle": "italic",
+            "fontWeight": "bold"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_2"
+        },
+        "position": {
+          "height": 0.0564,
+          "width": 0.0997,
+          "x": 0.6177,
+          "y": 0.0074
+        },
+        "props": {
+          "text": "Delete Resource",
+          "textStyle": {
+            "color": "#00AC00",
+            "fontFamily": "serif",
+            "fontStyle": "italic",
+            "fontWeight": "bold"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_3"
+        },
+        "position": {
+          "height": 0.0564,
+          "width": 0.1031,
+          "x": 0.8211,
+          "y": 0.0074
+        },
+        "props": {
+          "text": "Modify Resource",
+          "textStyle": {
+            "color": "#00AC00",
+            "fontFamily": "serif",
+            "fontStyle": "italic",
+            "fontWeight": "bold"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_4"
+        },
+        "position": {
+          "height": 0.0564,
+          "width": 0.0988,
+          "x": 0.1843,
+          "y": 0.0074
+        },
+        "props": {
+          "text": "Swap schedules",
+          "textStyle": {
+            "color": "#00AC00",
+            "fontFamily": "serif",
+            "fontStyle": "italic",
+            "fontWeight": "bold"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_1"
+        },
+        "position": {
+          "height": 0.04,
+          "width": 0.0739,
+          "x": 0.0241,
+          "y": 0.0143
+        },
+        "props": {
+          "style": {
+            "color": "#00AC00",
+            "fontFamily": "serif",
+            "fontSize": 20,
+            "fontStyle": "italic",
+            "fontWeight": "bold"
+          },
+          "text": "Schedules..."
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "draggable": false,
+                "id": "SXfGZFK0",
+                "modal": false,
+                "overlayDismiss": true,
+                "resizable": true,
+                "showCloseIcon": false,
+                "type": "open",
+                "viewPath": "Addnew",
+                "viewportBound": false
+              },
+              "scope": "C",
+              "type": "popup"
+            }
+          }
+        },
+        "meta": {
+          "name": "Button"
+        },
+        "position": {
+          "height": 0.045,
+          "width": 0.055,
+          "x": 0.5111,
+          "y": 0.0129
+        },
+        "propConfig": {
+          "props.enabled": {
+            "binding": {
+              "config": {
+                "expression": "if({session.props.auth.user.roles[0]} \u003d \u0027Administrator\u0027,true,false)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "image": {
+            "icon": {
+              "color": "#8AFFFF"
+            },
+            "style": {
+              "fill": "#FF0000"
+            }
+          },
+          "text": "Add"
+        },
+        "type": "ia.input.button"
+      },
+      {
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "draggable": false,
+                "id": "SXfGZFK0",
+                "modal": false,
+                "overlayDismiss": true,
+                "resizable": true,
+                "showCloseIcon": false,
+                "type": "open",
+                "viewPath": "Deletenew",
+                "viewportBound": false
+              },
+              "scope": "C",
+              "type": "popup"
+            }
+          }
+        },
+        "meta": {
+          "name": "Button_0"
+        },
+        "position": {
+          "height": 0.045,
+          "width": 0.055,
+          "x": 0.719,
+          "y": 0.0129
+        },
+        "propConfig": {
+          "props.enabled": {
+            "binding": {
+              "config": {
+                "expression": "if({session.props.auth.user.roles[0]} \u003d \u0027Administrator\u0027,true,false)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "text": "Delete"
+        },
+        "type": "ia.input.button"
+      },
+      {
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\t# Convert string to Date object using the correct format\n\tstart2_date \u003d system.date.parse(self.view.params.Start2, \"MM/dd/yy HH:mm\")\n\tstart1_date \u003d system.date.parse(self.view.params.Start1, \"MM/dd/yy HH:mm\")\n\t\n\t# Convert D1 and D2 to integers\n\tminutes1 \u003d int(self.view.params.D1)\n\tminutes2 \u003d int(self.view.params.D2)\n\ta \u003d minutes2 - minutes1\n#\tself.view.params.a\u003d int(a)\n#\tif (a\u003e\u003d1):\n\t# Add minutes\n\td1 \u003d system.date.addMinutes(start2_date, minutes1)\n\td2 \u003d system.date.addMinutes(start1_date, minutes2)\n\t\t\n\t\t# Update database with Date objects (SQL Server accepts java.util.Date)\n\tnq1 \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\targ1 \u003d [start2_date, d1, self.view.params.task1.firstId]\n\tsystem.db.runPrepUpdate(nq1, arg1)\n\tnq2 \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\targ2 \u003d [start1_date, d2, self.view.params.task1.secondId]\n\tsystem.db.runPrepUpdate(nq2, arg2)\n\tnq3 \u003d \"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\"\n\targ3 \u003d [start2_date, d1, self.view.params.task1.firstId]\n\tsystem.db.runPrepUpdate(nq3, arg3)\n\tnq4 \u003d \"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\"\n\targ4 \u003d [start1_date, d2, self.view.params.task1.secondId]\n\tsystem.db.runPrepUpdate(nq4, arg4)\n\tif(a\u003e\u003d0):\n\t\t# Step 4: Get all tasks on the same date and itemId, ordered by startDate\n\t\teventDate \u003d system.date.format(start1_date, \"yyyy-MM-dd\")\n\t\tqueryTasks \u003d \"\"\"\n\t\tSELECT eventId, startDate, endDate \n\t\tFROM Schedules \n\t\tWHERE itemId \u003d ? \n\t\t  AND eventId !\u003d ? \n\t\t  AND CONVERT(date, startDate) \u003d ? \n\t\tORDER BY startDate\n\t\t\"\"\"\n\t\ttasks \u003d system.db.runPrepQuery(queryTasks, [self.view.params.item, self.view.params.task1.secondId, eventDate])\n\t\tqwe \u003d system.date.format(start1_date, \"yyyy-MM-dd hh:mm\")\n\t\tcalquery \u003d \"\"\"\n\t\tSELECT MIN(startDate) \n\t\tFROM Schedules \n\t\tWHERE itemId \u003d ? \n\t\t  AND eventId !\u003d ?\n\t\t  AND CONVERT(date, startDate) \u003d ? \n\t\t\"\"\"\n\t\tcalres \u003d system.db.runPrepQuery(calquery, [self.view.params.item, self.view.params.task1.secondId, qwe])\n\t\tself.view.params.calres \u003d calres\n\t\t\n\t\t# Extract the actual date value\n\t\tif len(calres) \u003e 0 and calres[0][0] is not None:\n\t\t    calres1 \u003d calres[0][0]\n\t\t    duration \u003d system.date.minutesBetween(calres1,d2)\n\t\t    self.view.params.b \u003d duration\n\t\telse:\n\t\t    pass\n#\t\tself.view.params.calres \u003d calres\n#\t\t\n#\t\tcalres1 \u003d self.view.params.calres\n\n\t\t# Calculate duration in milliseconds\n#\t\tduration\u003dsystem.date.minutesBetween(d2, calres1)\n\t\t# Step 5: Shift only those tasks that start at originalEndDate and recursively shift others to avoid overlap\n\t\tshiftMinutes \u003d duration\n#\t\tself.view.params.b \u003d duration\n\t\tcurrentEnd \u003d d2\n\t\tfor task in tasks:\n\t\t    if task[\u0027startDate\u0027] \u003d\u003d start1_date or task[\u0027startDate\u0027] \u003c currentEnd:\n\t\t        # Overlap detected or direct dependency\n\t\t        newStart \u003d system.date.addMinutes(task[\u0027startDate\u0027], shiftMinutes)\n\t\t        newEnd \u003d system.date.addMinutes(task[\u0027endDate\u0027], shiftMinutes)\n\t\t        updateTask \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\t\t        system.db.runPrepUpdate(updateTask, [newStart, newEnd, task[\u0027eventId\u0027]])\n\t\t        updateTasks \u003d \"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\"\n\t\t        system.db.runPrepUpdate(updateTasks, [newStart, newEnd, task[\u0027eventId\u0027]])\n\t\t        currentEnd \u003d newEnd  # Update currentEnd to check for next overlaps\n\t\t    else:\n\t\t        break  # No overlap, stop shifting\n\telse:\n\t\tpass\n\tself.getSibling(\"EquipmentSchedule\").refreshBinding(\"props.scheduledEvents\")"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        },
+        "meta": {
+          "name": "Button_2"
+        },
+        "position": {
+          "height": 0.045,
+          "width": 0.055,
+          "x": 0.2861,
+          "y": 0.0129
+        },
+        "propConfig": {
+          "props.enabled": {
+            "binding": {
+              "config": {
+                "expression": "if({session.props.auth.user.roles[0]} \u003d \u0027Administrator\u0027,true,false)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "image": {
+            "icon": {
+              "color": "#8AFFFF"
+            },
+            "style": {
+              "fill": "#FF0000"
+            }
+          },
+          "text": "Swap"
+        },
+        "type": "ia.input.button"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "mode": "percent"
+    },
+    "type": "ia.container.coord"
+  }
+}

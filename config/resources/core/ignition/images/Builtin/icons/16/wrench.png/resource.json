@@ -1,0 +1,20 @@
+{
+  "scope": "A",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "wrench.png"
+  ],
+  "attributes": {
+    "width": 16,
+    "format": "PNG",
+    "lastModification": {
+      "actor": "8.3-migration",
+      "timestamp": "2025-11-06T06:06:37Z"
+    },
+    "size": 623,
+    "lastModificationSignature": "eefc464857199aa6d160d91d23bdad43caaeaefd71ec23cbf8178b24a74aaf6f",
+    "height": 16
+  }
+}

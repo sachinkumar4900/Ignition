@@ -1,0 +1,98 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 133,
+      "width": 200
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Label"
+        },
+        "position": {
+          "height": 0.488,
+          "width": 0.7188,
+          "x": 0.047,
+          "y": 0.0461
+        },
+        "props": {
+          "text": "Please click \"yes\" to confirm the swap."
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\tsystem.perspective.closePopup(\u0027abc123\u0027)"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        },
+        "meta": {
+          "name": "x"
+        },
+        "position": {
+          "height": 0.168,
+          "width": 0.1198,
+          "x": 0.8418,
+          "y": 0.0766
+        },
+        "props": {
+          "style": {
+            "backgroundColor": "#FF0000"
+          },
+          "text": "x"
+        },
+        "type": "ia.input.button"
+      },
+      {
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\tsystem.perspective.closePopup(\u0027abc123\u0027)\n\tstart2_date \u003d system.date.parse(self.session.custom.Start2, \"MM/dd/yy HH:mm\")\n\tstart1_date \u003d system.date.parse(self.session.custom.Start1, \"MM/dd/yy HH:mm\")\n\tminutes1 \u003d int(self.session.custom.D1)\n\tminutes2 \u003d int(self.session.custom.D2)\n\ta \u003d minutes2 - minutes1\n\tb \u003d minutes1 - minutes2\n\td1 \u003d system.date.addMinutes(start2_date, minutes1)\n\td2 \u003d system.date.addMinutes(start1_date, minutes2)\n#\tfi\u003d self.session.custom.task1.firstId\n#\tsi\u003d self.session.custom.task1.secondId\n\tnq1 \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\targ1 \u003d [start2_date, d1, self.session.custom.task1.firstId]\n\tsystem.db.runPrepUpdate(nq1, arg1)\n\tnq2 \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\targ2 \u003d [start1_date, d2, self.session.custom.task1.secondId]\n\tsystem.db.runPrepUpdate(nq2, arg2)\n\tnq3 \u003d \"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\"\n\targ3 \u003d [start2_date, d1, self.session.custom.task1.firstId]\n\tsystem.db.runPrepUpdate(nq3, arg3)\n\tnq4 \u003d \"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\"\n\targ4 \u003d [start1_date, d2, self.session.custom.task1.secondId]\n\tsystem.db.runPrepUpdate(nq4, arg4)\n\tbreakStartHour \u003d 20  # 8 PM\n\tbreakEndHour \u003d 8     # 8 AM next day\n\tif(a\u003e\u003d0):\n\t\tquery \u003d \"SELECT startDate, endDate FROM Schedules WHERE eventId \u003d ?\"\n\t\teventData \u003d system.db.runPrepQuery(query, [self.session.custom.task1.secondId])[0]\n\t\toriginalStartDate \u003d eventData[\u0027startDate\u0027]\n\t\toriginalEndDate \u003d eventData[\u0027endDate\u0027]\n\t\tcurrentEnd \u003d eventData[\u0027endDate\u0027]\n\t\tqueryTasks \u003d \"\"\"SELECT itemId, eventId, startDate, endDate, label\n\t\tFROM Schedules\n\t\tWHERE itemId \u003d ? AND eventId !\u003d ? AND startDate \u003e ?\n\t\tORDER BY startDate\"\"\"\n\t\ttasks \u003d system.db.runPrepQuery(queryTasks, [self.session.custom.item, self.session.custom.task1.secondId, originalStartDate])\n\t\tfor task in tasks:\n\t\t\tif task[\u0027startDate\u0027] \u003c currentEnd:\n\t\t\t\tduration \u003d system.date.minutesBetween(task[\u0027startDate\u0027], task[\u0027endDate\u0027])\n\t\t\t\tnewStart \u003d currentEnd\n\t\t\t\tnewEnd \u003d system.date.addMinutes(newStart, duration)\n\t\t\t\tbreakStart \u003d system.date.setTime(newStart, breakStartHour, 0, 0)\n\t\t\t\tbreakEndd \u003d system.date.addDays(breakStart, 1)\n\t\t\t\tbreakEnd \u003d system.date.setTime(breakEndd, breakEndHour, 0, 0)\n\t\t\t\tif newEnd \u003e breakStart:\n\t\t\t\t\tproposedEndDate1 \u003d newEnd\n\t\t\t\t\tfirstPartEnd1 \u003d breakStart\n\t\t\t\t\tremainingDuration1 \u003d system.date.minutesBetween(breakStart, proposedEndDate1)\n\t\t\t\t\tsystem.db.runPrepUpdate(\"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\", [newStart, firstPartEnd1, task[\u0027eventId\u0027]])\n\t\t\t\t\tsystem.db.runPrepUpdate(\"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\", [newStart, firstPartEnd1, task[\u0027eventId\u0027]])\n\t\t\t\t\tnextDayStart \u003d system.date.addDays(newStart, 1)\n\t\t\t\t\tnextDayStartt \u003d system.date.setTime(nextDayStart, breakEndHour+1, 0, 0)\n\t\t\t\t\tsecondPartEnd1 \u003d system.date.addMinutes(nextDayStartt, remainingDuration1)\n\t\t\t\t\tqueryTasksxxx \u003d \"SELECT Department,Status,l,RequestTime,ProjectDescription,ProjectOwner,Remark FROM Request WHERE RID \u003d ?\"\n\t\t\t\t\ttasksrow1 \u003d system.db.runPrepQuery(queryTasksxxx, [task[\u0027eventId\u0027]])\n\t\t\t\t\ttasksxxx \u003d tasksrow1[0]\n\t\t\t\t\tinsertQuery12 \u003d \"INSERT INTO Request (Department,SDateTime, EDateTime, Status, l,RequestTime,ProjectDescription,ProjectOwner,Remark) VALUES (?, ?, ?, ?,?,?,?,?,?)\"\n\t\t\t\t\tsystem.db.runPrepUpdate(insertQuery12, [tasksxxx[\u0027Department\u0027], nextDayStartt, secondPartEnd1, tasksxxx[\u0027Status\u0027],tasksxxx[\u0027l\u0027],tasksxxx[\u0027RequestTime\u0027],tasksxxx[\u0027ProjectDescription\u0027],tasksxxx[\u0027ProjectOwner\u0027],tasksxxx[\u0027Remark\u0027]])\n\t\t\t\t\tmaxx \u003d \"SELECT EDateTime FROM Request WHERE RID \u003d (SELECT MAX(RID) FROM Request)\"\n\t\t\t\t\tmaxxrow \u003d system.db.runPrepQuery(maxx)\n\t\t\t\t\tmaxxans \u003d maxxrow.getValueAt(0,\"EDateTime\")\n\t\t\t\t\tm \u003d \"SELECT DATEPART(MINUTE, ?) AS m\"\n\t\t\t\t\tmm \u003d system.db.runPrepQuery(m,[maxxans])\n\t\t\t\t\tmmm \u003d mm[0][\u0027m\u0027]\n\t\t\t\t\tnamedQuery \u003d \"INSERT INTO Schedules SELECT E.ID AS itemId, R.RID AS eventId, R.SDateTime AS startDate, R.EDateTime AS endDate, R.ProjectDescription AS label, R.l AS leadTime FROM Department AS E join Request AS R ON E.Department\u003dR.Department WHERE R.RID NOT IN (SELECT eventId FROM Schedules) AND not (R.Status \u003d \u0027Slot Not Available\u0027)\"\n\t\t\t\t\tsystem.db.runPrepUpdate(namedQuery)\n\t\t\t\t\tminn \u003d \"SELECT eventId, startDate, endDate FROM Schedules WHERE eventId \u003d (SELECT MAX(eventId) FROM Schedules)\"\n\t\t\t\t\tminnrow \u003d system.db.runPrepQuery(minn)\n\t\t\t\t\tst \u003d minnrow[0][\u0027startDate\u0027]\n\t\t\t\t\ten \u003d minnrow[0][\u0027endDate\u0027]\n\t\t\t\t\tei \u003d minnrow[0][\u0027eventId\u0027]\n\t\t\t\t\tif mmm \u003d\u003d 30:\n\t\t\t\t\t\taddddstart \u003d system.date.addMinutes(st, -30)\n\t\t\t\t\t\taddddend \u003d system.date.addMinutes(en, -30)\n\t\t\t\t\telse:\n\t\t\t\t\t\taddddstart \u003d system.date.addMinutes(st, -60)\n\t\t\t\t\t\taddddend \u003d system.date.addMinutes(en, -60)\n\t\t\t\t\tnow \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d (SELECT MAX(eventId) FROM Schedules)\"\n\t\t\t\t\tsystem.db.runPrepUpdate(now,[addddstart,addddend])\n\t#\t\t\t\tnamedQuery1 \u003d \"INSERT INTO Schedules SELECT E.ID AS itemId, R.RID AS eventId, R.SDateTime AS startDate, R.EDateTime AS endDate, R.ProjectDescription AS label, R.l AS leadTime FROM Department AS E join Request AS R ON E.Department\u003dR.Department WHERE R.RID NOT IN (SELECT eventId FROM Schedules) AND not (R.Status \u003d \u0027Slot Not Available\u0027)\"\n\t#\t\t\t\tsystem.db.runPrepUpdate(namedQuery1)\n\t\t\t\t\tcurrentEnd \u003d addddend\n\t\t\t\t\tqueryTasks \u003d \"\"\"SELECT itemId, eventId, startDate, endDate, label\n\t\t\t\t\tFROM Schedules\n\t\t\t\t\tWHERE itemId \u003d ? AND eventId NOT IN (?,?) AND startDate \u003e\u003d ?\n\t\t\t\t\tORDER BY startDate\"\"\"\n\t\t\t\t\ttasks \u003d system.db.runPrepQuery(queryTasks, [self.session.custom.item, self.session.custom.task1.secondId, ei, addddstart])\n\t\t\t\telse:\n\t\t\t\t\tupdateTask \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\t\t\t\t\tsystem.db.runPrepUpdate(updateTask, [newStart, newEnd, task[\u0027eventId\u0027]])\n\t\t\t\t\tupdateRequest \u003d \"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\"\n\t\t\t\t\tsystem.db.runPrepUpdate(updateRequest, [newStart, newEnd, task[\u0027eventId\u0027]])\n\t\t\t\t\tcurrentEnd \u003d newEnd\n\t\t\telse:\n\t\t\t\tpass\n\tif(b\u003e\u003d0):\n\t\tquery \u003d \"SELECT startDate, endDate FROM Schedules WHERE eventId \u003d ?\"\n\t\teventData \u003d system.db.runPrepQuery(query, [self.session.custom.task1.firstId])[0]\n\t\toriginalStartDate \u003d eventData[\u0027startDate\u0027]\n\t\toriginalEndDate \u003d eventData[\u0027endDate\u0027]\n\t\tcurrentEnd \u003d eventData[\u0027endDate\u0027]\n\t\tqueryTasks \u003d \"\"\"SELECT itemId, eventId, startDate, endDate, label\n\t\tFROM Schedules\n\t\tWHERE itemId \u003d ? AND eventId !\u003d ? AND startDate \u003e ?\n\t\tORDER BY startDate\"\"\"\n\t\ttasks \u003d system.db.runPrepQuery(queryTasks, [self.session.custom.item, self.session.custom.task1.firstId, originalStartDate])\n\t\tfor task in tasks:\n\t\t\tif task[\u0027startDate\u0027] \u003c currentEnd:\n\t\t\t\tduration \u003d system.date.minutesBetween(task[\u0027startDate\u0027], task[\u0027endDate\u0027])\n\t\t\t\tnewStart \u003d currentEnd\n\t\t\t\tnewEnd \u003d system.date.addMinutes(newStart, duration)\n\t\t\t\tbreakStart \u003d system.date.setTime(newStart, breakStartHour, 0, 0)\n\t\t\t\tbreakEndd \u003d system.date.addDays(breakStart, 1)\n\t\t\t\tbreakEnd \u003d system.date.setTime(breakEndd, breakEndHour, 0, 0)\n\t\t\t\tif newEnd \u003e breakStart:\n\t\t\t\t\tproposedEndDate1 \u003d newEnd\n\t\t\t\t\tfirstPartEnd1 \u003d breakStart\n\t\t\t\t\tremainingDuration1 \u003d system.date.minutesBetween(breakStart, proposedEndDate1)\n\t\t\t\t\tsystem.db.runPrepUpdate(\"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\", [newStart, firstPartEnd1, task[\u0027eventId\u0027]])\n\t\t\t\t\tsystem.db.runPrepUpdate(\"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\", [newStart, firstPartEnd1, task[\u0027eventId\u0027]])\n\t\t\t\t\tnextDayStart \u003d system.date.addDays(newStart, 1)\n\t\t\t\t\tnextDayStartt \u003d system.date.setTime(nextDayStart, breakEndHour+1, 0, 0)\n\t\t\t\t\tsecondPartEnd1 \u003d system.date.addMinutes(nextDayStartt, remainingDuration1)\n\t\t\t\t\tqueryTasksxxx \u003d \"SELECT Department,Status,l,RequestTime,ProjectDescription,ProjectOwner,Remark FROM Request WHERE RID \u003d ?\"\n\t\t\t\t\ttasksrow1 \u003d system.db.runPrepQuery(queryTasksxxx, [task[\u0027eventId\u0027]])\n\t\t\t\t\ttasksxxx \u003d tasksrow1[0]\n\t\t\t\t\tinsertQuery12 \u003d \"INSERT INTO Request (Department,SDateTime, EDateTime, Status, l,RequestTime,ProjectDescription,ProjectOwner,Remark) VALUES (?, ?, ?, ?,?,?,?,?,?)\"\n\t\t\t\t\tsystem.db.runPrepUpdate(insertQuery12, [tasksxxx[\u0027Department\u0027], nextDayStartt, secondPartEnd1, tasksxxx[\u0027Status\u0027],tasksxxx[\u0027l\u0027],tasksxxx[\u0027RequestTime\u0027],tasksxxx[\u0027ProjectDescription\u0027],tasksxxx[\u0027ProjectOwner\u0027],tasksxxx[\u0027Remark\u0027]])\n\t\t\t\t\tmaxx \u003d \"SELECT EDateTime FROM Request WHERE RID \u003d (SELECT MAX(RID) FROM Request)\"\n\t\t\t\t\tmaxxrow \u003d system.db.runPrepQuery(maxx)\n\t\t\t\t\tmaxxans \u003d maxxrow.getValueAt(0,\"EDateTime\")\n\t\t\t\t\tm \u003d \"SELECT DATEPART(MINUTE, ?) AS m\"\n\t\t\t\t\tmm \u003d system.db.runPrepQuery(m,[maxxans])\n\t\t\t\t\tmmm \u003d mm[0][\u0027m\u0027]\n\t\t\t\t\tnamedQuery \u003d \"INSERT INTO Schedules SELECT E.ID AS itemId, R.RID AS eventId, R.SDateTime AS startDate, R.EDateTime AS endDate, R.ProjectDescription AS label, R.l AS leadTime FROM Department AS E join Request AS R ON E.Department\u003dR.Department WHERE R.RID NOT IN (SELECT eventId FROM Schedules) AND not (R.Status \u003d \u0027Slot Not Available\u0027)\"\n\t\t\t\t\tsystem.db.runPrepUpdate(namedQuery)\n\t\t\t\t\tminn \u003d \"SELECT eventId, startDate, endDate FROM Schedules WHERE eventId \u003d (SELECT MAX(eventId) FROM Schedules)\"\n\t\t\t\t\tminnrow \u003d system.db.runPrepQuery(minn)\n\t\t\t\t\tst \u003d minnrow[0][\u0027startDate\u0027]\n\t\t\t\t\ten \u003d minnrow[0][\u0027endDate\u0027]\n\t\t\t\t\tei \u003d minnrow[0][\u0027eventId\u0027]\n\t\t\t\t\tif mmm \u003d\u003d 30:\n\t\t\t\t\t\taddddstart \u003d system.date.addMinutes(st, -30)\n\t\t\t\t\t\taddddend \u003d system.date.addMinutes(en, -30)\n\t\t\t\t\telse:\n\t\t\t\t\t\taddddstart \u003d system.date.addMinutes(st, -60)\n\t\t\t\t\t\taddddend \u003d system.date.addMinutes(en, -60)\n\t\t\t\t\tnow \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d (SELECT MAX(eventId) FROM Schedules)\"\n\t\t\t\t\tsystem.db.runPrepUpdate(now,[addddstart,addddend])\n\t#\t\t\t\tnamedQuery1 \u003d \"INSERT INTO Schedules SELECT E.ID AS itemId, R.RID AS eventId, R.SDateTime AS startDate, R.EDateTime AS endDate, R.ProjectDescription AS label, R.l AS leadTime FROM Department AS E join Request AS R ON E.Department\u003dR.Department WHERE R.RID NOT IN (SELECT eventId FROM Schedules) AND not (R.Status \u003d \u0027Slot Not Available\u0027)\"\n\t#\t\t\t\tsystem.db.runPrepUpdate(namedQuery1)\n\t\t\t\t\tcurrentEnd \u003d addddend\n\t\t\t\t\tqueryTasks \u003d \"\"\"SELECT itemId, eventId, startDate, endDate, label\n\t\t\t\t\tFROM Schedules\n\t\t\t\t\tWHERE itemId \u003d ? AND eventId NOT IN (?,?) AND startDate \u003e\u003d ?\n\t\t\t\t\tORDER BY startDate\"\"\"\n\t\t\t\t\ttasks \u003d system.db.runPrepQuery(queryTasks, [self.session.custom.item, self.session.custom.task1.firstId, ei, addddstart])\n\t\t\t\telse:\n\t\t\t\t\tupdateTask \u003d \"UPDATE Schedules SET startDate \u003d ?, endDate \u003d ? WHERE eventId \u003d ?\"\n\t\t\t\t\tsystem.db.runPrepUpdate(updateTask, [newStart, newEnd, task[\u0027eventId\u0027]])\n\t\t\t\t\tupdateRequest \u003d \"UPDATE Request SET SDateTime \u003d ?, EDateTime \u003d ? WHERE RID \u003d ?\"\n\t\t\t\t\tsystem.db.runPrepUpdate(updateRequest, [newStart, newEnd, task[\u0027eventId\u0027]])\n\t\t\t\t\tcurrentEnd \u003d newEnd\n\t\t\telse:\n\t\t\t\tpass\n\telse:\n\t\tpass\n#\tfi\u003d self.session.custom.task1.firstId\n#\tsi\u003d self.session.custom.task1.secondId\n#\tself.getSibling(\"EquipmentSchedule\").refreshBinding(\"props.scheduledEvents\")"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        },
+        "meta": {
+          "name": "Button"
+        },
+        "position": {
+          "height": 0.176,
+          "width": 0.2865,
+          "x": 0.3442,
+          "y": 0.6279
+        },
+        "props": {
+          "text": "Yes"
+        },
+        "type": "ia.input.button"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "mode": "percent",
+      "style": {
+        "borderBottomLeftRadius": 10,
+        "borderBottomRightRadius": 10,
+        "borderStyle": "solid",
+        "borderTopLeftRadius": 10,
+        "borderTopRightRadius": 10
+      }
+    },
+    "type": "ia.container.coord"
+  }
+}

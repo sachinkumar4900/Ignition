@@ -1,0 +1,21 @@
+{
+  "scope": "A",
+  "description": "",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "energy.jpg"
+  ],
+  "attributes": {
+    "width": 225,
+    "format": "JPEG",
+    "lastModification": {
+      "actor": "admin_IoT_Lab",
+      "timestamp": "2025-12-16T06:17:23Z"
+    },
+    "size": 7679,
+    "lastModificationSignature": "fd24a4c85f00ee9417b8886a66c1f6f53911ef7ec19db3363baa5a6307ab3058",
+    "height": 225
+  }
+}

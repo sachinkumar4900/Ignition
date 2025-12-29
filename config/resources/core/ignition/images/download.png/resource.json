@@ -1,0 +1,21 @@
+{
+  "scope": "A",
+  "description": "",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "download.png"
+  ],
+  "attributes": {
+    "width": 159,
+    "format": "PNG",
+    "lastModification": {
+      "actor": "admin_IoT_Lab",
+      "timestamp": "2025-12-16T04:52:40Z"
+    },
+    "size": 2360,
+    "lastModificationSignature": "b9abe815b92d2d4d4748212d9854f6dc76420bd4109a376b25ee3ab568c1da7c",
+    "height": 148
+  }
+}

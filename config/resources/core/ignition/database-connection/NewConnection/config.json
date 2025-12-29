@@ -1,0 +1,35 @@
+{
+  "connectURL": "jdbc:sqlserver://localhost\\MSSQLSERVER",
+  "connectionProps": "databaseName\u003dGEC1",
+  "connectionResetParams": "",
+  "defaultTransactionLevel": "DEFAULT",
+  "driver": "Microsoft SQLServer",
+  "evictionRate": -1,
+  "evictionTests": 3,
+  "evictionTime": 1800000,
+  "failoverMode": "STANDARD",
+  "includeSchemaInTableName": false,
+  "password": {
+    "data": {
+      "ciphertext": "PG76G4d4oM8ra2SITScm0dUc",
+      "encrypted_key": "DVWnLxnzfmJzSTnj5prOCZP-N5gi5YV3I9nwPlthH7YBh1zhM0QC7g",
+      "iv": "SHCNxlDK-KIU3xEF",
+      "protected": "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2R0NNIiwiaWF0IjoxNzYyNDA5MTk1LCJ6aXAiOiJERUYifQ",
+      "tag": "P5OFyKvreMn17oj5Ay3GvA"
+    },
+    "type": "Embedded"
+  },
+  "poolInitSize": 0,
+  "poolMaxActive": 8,
+  "poolMaxIdle": 8,
+  "poolMaxWait": 5000,
+  "poolMinIdle": 0,
+  "slowQueryLogThreshold": 60000,
+  "testOnBorrow": true,
+  "testOnReturn": false,
+  "testWhileIdle": false,
+  "translator": "MSSQL",
+  "username": "sa",
+  "validationQuery": "SELECT 1",
+  "validationSleepTime": 10000
+}

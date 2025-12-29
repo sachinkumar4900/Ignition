@@ -1,0 +1,1 @@
+SELECT DATEDIFF(SECOND,startDate,endDate)/60 AS D2 FROM Schedules where eventId =:event2

@@ -1,0 +1,17 @@
+{
+  "scope": "A",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "code.py"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "admin_IoT_Lab",
+      "timestamp": "2025-10-27T09:18:16Z"
+    },
+    "hintScope": 2,
+    "lastModificationSignature": "5a2ae8f57906f18da3510df65dc97479076a5a94c4921b4c0c1bf5acc112bf4a"
+  }
+}

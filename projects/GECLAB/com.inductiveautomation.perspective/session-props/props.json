@@ -1,0 +1,187 @@
+{
+  "custom": {
+    "calres": "",
+    "calresmy": "",
+    "item": "",
+    "month": "",
+    "swap": 0,
+    "task1": {
+      "clickCount": 0,
+      "firstId": null,
+      "secondId": null
+    }
+  },
+  "propConfig": {
+    "custom.D1": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "event1": "{this.custom.task1.firstId}"
+          },
+          "queryPath": "Swap duration 1"
+        },
+        "transforms": [
+          {
+            "code": "\tfrom java.text import SimpleDateFormat\n\t\n\tpyData \u003d system.dataset.toPyDataSet(value)\n\t\n\tif pyData and len(pyData) \u003e 0:\n\t    raw_date \u003d pyData[0][0]  # First row, first column\n#\t    if raw_date:\n#\t        sdf \u003d SimpleDateFormat(\"MM/dd/yy HH:mm\")\n#\t        formatted_date \u003d sdf.format(raw_date)\n\t    return raw_date\n\telse:\n\t    return \"N/A\"",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "custom.D2": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "event2": "{this.custom.task1.secondId}"
+          },
+          "queryPath": "swap duration 2"
+        },
+        "transforms": [
+          {
+            "code": "\tfrom java.text import SimpleDateFormat\n\t\n\tpyData \u003d system.dataset.toPyDataSet(value)\n\t\n\tif pyData and len(pyData) \u003e 0:\n\t    raw_date \u003d pyData[0][0]  # First row, first column\n#\t    if raw_date:\n#\t        sdf \u003d SimpleDateFormat(\"MM/dd/yy HH:mm\")\n#\t        formatted_date \u003d sdf.format(raw_date)\n\t    return raw_date\n\telse:\n\t    return \"N/A\"",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "custom.End1": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "event1": "{this.custom.task1.firstId}"
+          },
+          "queryPath": "FetchEnd1"
+        },
+        "transforms": [
+          {
+            "code": "\tfrom java.text import SimpleDateFormat\n\t\n\tpyData \u003d system.dataset.toPyDataSet(value)\n\t\n\tif pyData and len(pyData) \u003e 0:\n\t    raw_date \u003d pyData[0][0]  # First row, first column\n\t    if raw_date:\n\t        sdf \u003d SimpleDateFormat(\"MM/dd/yy HH:mm\")\n\t        formatted_date \u003d sdf.format(raw_date)\n\t        return formatted_date\n\t    else:\n\t        return \"N/A\"\n\telse:\n\t    return \"N/A\"",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "custom.End2": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "event2": "{this.custom.task1.secondId}"
+          },
+          "queryPath": "FetchEnd2"
+        },
+        "transforms": [
+          {
+            "code": "\tfrom java.text import SimpleDateFormat\n\t\n\tpyData \u003d system.dataset.toPyDataSet(value)\n\t\n\tif pyData and len(pyData) \u003e 0:\n\t    raw_date \u003d pyData[0][0]  # First row, first column\n\t    if raw_date:\n\t        sdf \u003d SimpleDateFormat(\"MM/dd/yy HH:mm\")\n\t        formatted_date \u003d sdf.format(raw_date)\n\t        return formatted_date\n\t    else:\n\t        return \"N/A\"\n\telse:\n\t    return \"N/A\"",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "custom.Start1": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "event1": "{this.custom.task1.firstId}"
+          },
+          "queryPath": "FetchStart1"
+        },
+        "transforms": [
+          {
+            "code": "\tfrom java.text import SimpleDateFormat\n\t\n\tpyData \u003d system.dataset.toPyDataSet(value)\n\t\n\tif pyData and len(pyData) \u003e 0:\n\t    raw_date \u003d pyData[0][0]  # First row, first column\n\t    if raw_date:\n\t        sdf \u003d SimpleDateFormat(\"MM/dd/yy HH:mm\")\n\t        formatted_date \u003d sdf.format(raw_date)\n\t        return formatted_date\n\t    else:\n\t        return \"N/A\"\n\telse:\n\t    return \"N/A\"",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "custom.Start2": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "event2": "{this.custom.task1.secondId}"
+          },
+          "queryPath": "FetchStart2"
+        },
+        "transforms": [
+          {
+            "code": "\tfrom java.text import SimpleDateFormat\n\t\n\tpyData \u003d system.dataset.toPyDataSet(value)\n\t\n\tif pyData and len(pyData) \u003e 0:\n\t    raw_date \u003d pyData[0][0]  # First row, first column\n\t    if raw_date:\n\t        sdf \u003d SimpleDateFormat(\"MM/dd/yy HH:mm\")\n\t        formatted_date \u003d sdf.format(raw_date)\n\t        return formatted_date\n\t    else:\n\t        return \"N/A\"\n\telse:\n\t    return \"N/A\"",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "props.auth": {
+      "access": "PRIVATE",
+      "persistent": false
+    },
+    "props.device.accelerometer": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.device.identifier": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.device.timezone": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.device.type": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.device.userAgent": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.gateway": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.geolocation.data": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.geolocation.permissionGranted": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.host": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.id": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.lastActivity": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.offline.capable": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.offline.enabled": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.offline.lastSynced": {
+      "access": "SYSTEM",
+      "persistent": false
+    }
+  },
+  "props": {
+    "address": "127.0.0.1",
+    "device": {},
+    "geolocation": {},
+    "locale": "en-US",
+    "offline": {},
+    "theme": "dark-cool",
+    "timeZoneId": "Asia/Calcutta"
+  }
+}

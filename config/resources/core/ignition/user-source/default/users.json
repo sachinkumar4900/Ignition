@@ -1,0 +1,78 @@
+{
+  "users": [
+    {
+      "uuid": "1",
+      "username": "Ishita",
+      "firstName": "",
+      "lastName": "",
+      "schedule": "Always",
+      "description": "",
+      "password": "[9d56f3a]8fea1cf5b7e224c7ecccab4754de9c9dc622baeb02595626c62db15902773c0f",
+      "passwordDate": "20251030.150744734+0530",
+      "passwordHistory": [],
+      "badge": "",
+      "createdDate": "20251106.113651160+0530",
+      "lastModifiedDate": "20251106.113651160+0530",
+      "roles": [
+        "3afbb03d-c62f-4f5d-89d4-c58228dd5529"
+      ],
+      "extraProps": [],
+      "scheduleAdjustments": [],
+      "contactInfos": []
+    },
+    {
+      "uuid": "3",
+      "username": "admin_IoT_Lab",
+      "schedule": "Always",
+      "language": "en",
+      "password": "[0D310A24]15f6b537498410add62900bdd0ba28fbbd33bd14b7b3653570fc56179482f444",
+      "passwordDate": "20251031.151958205+0530",
+      "passwordHistory": [],
+      "createdDate": "20251106.113651160+0530",
+      "lastModifiedDate": "20251106.113651160+0530",
+      "roles": [
+        "3afbb03d-c62f-4f5d-89d4-c58228dd5529"
+      ],
+      "extraProps": [
+        {
+          "propertyKey": "user.pin"
+        }
+      ],
+      "scheduleAdjustments": [],
+      "contactInfos": []
+    },
+    {
+      "uuid": "c9af9af7-f7ef-4d9a-82b4-9940c3caefce",
+      "username": "sa",
+      "firstName": "sa",
+      "lastName": "",
+      "schedule": "Always",
+      "description": "",
+      "password": "[E3BAE656]cc72ca6a4562427a58d85bea4f1ac9d873ce71914cc3c645adedc9a7ff2c37e0",
+      "passwordDate": "20251216.131129293+0530",
+      "passwordHistory": [],
+      "badge": "",
+      "createdDate": "20251216.131129289+0530",
+      "lastModifiedDate": "20251216.153455678+0530",
+      "roles": [
+        "3afbb03d-c62f-4f5d-89d4-c58228dd5529"
+      ],
+      "extraProps": [
+        {
+          "propertyKey": "user.pin",
+          "propertyValue": ""
+        }
+      ],
+      "scheduleAdjustments": [],
+      "contactInfos": []
+    }
+  ],
+  "roles": [
+    {
+      "uuid": "3afbb03d-c62f-4f5d-89d4-c58228dd5529",
+      "rolename": "Administrator",
+      "createdDate": "20251106.113651160+0530",
+      "lastModifiedDate": "20251216.153455633+0530"
+    }
+  ]
+}

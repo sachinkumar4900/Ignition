@@ -1,0 +1,6 @@
+SELECT
+  DateTime,
+  ENERGY_CONSUMED AS ENERGY_CONSUMED
+FROM
+  CONSUMPTION
+WHERE DateTime between :StartDate and :EndDate

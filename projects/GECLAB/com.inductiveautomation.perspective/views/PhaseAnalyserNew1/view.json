@@ -1,0 +1,109 @@
+{
+  "custom": {
+    "showGraph": false
+  },
+  "params": {},
+  "propConfig": {
+    "custom.showGraph": {
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 660,
+      "width": 1164
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Label_3"
+        },
+        "position": {
+          "height": 0.06,
+          "width": 0.9992,
+          "y": 0.0048
+        },
+        "props": {
+          "style": {
+            "borderBottomLeftRadius": "10px",
+            "borderBottomRightRadius": "10px",
+            "borderStyle": "solid",
+            "borderTopLeftRadius": "10px",
+            "borderTopRightRadius": "10px",
+            "textAlign": "left",
+            "textIndent": 20,
+            "whiteSpace": "normal"
+          },
+          "text": "All cosolidated Data (Single Phase Analyser, Three Phase Analyzer, Meghdoot)"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "ToggleSwitch"
+        },
+        "position": {
+          "height": 0.0606,
+          "width": 0.1856,
+          "x": 0.7958,
+          "y": -0.0006
+        },
+        "propConfig": {
+          "props.selected": {
+            "binding": {
+              "config": {
+                "bidirectional": true,
+                "path": "view.custom.showGraph"
+              },
+              "type": "property"
+            }
+          }
+        },
+        "props": {
+          "label": {
+            "style": {
+              "color": "#47FF47"
+            },
+            "text": "Show Graph View"
+          }
+        },
+        "type": "ia.input.toggle-switch"
+      },
+      {
+        "meta": {
+          "name": "EmbeddedView"
+        },
+        "position": {
+          "height": 0.9061,
+          "width": 1,
+          "x": -0.0019,
+          "y": 0.0691
+        },
+        "propConfig": {
+          "props.path": {
+            "binding": {
+              "config": {
+                "expression": "if({view.custom.showGraph}, \"GraphView\", \"TableView\")"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "type": "ia.display.view"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "position": {
+      "x": -0.0773,
+      "y": -0.003
+    },
+    "props": {
+      "mode": "percent"
+    },
+    "type": "ia.container.coord"
+  }
+}

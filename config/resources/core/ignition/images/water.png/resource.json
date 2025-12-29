@@ -1,0 +1,21 @@
+{
+  "scope": "A",
+  "description": "",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "water.png"
+  ],
+  "attributes": {
+    "width": 225,
+    "format": "PNG",
+    "lastModification": {
+      "actor": "admin_IoT_Lab",
+      "timestamp": "2025-12-16T06:17:26Z"
+    },
+    "size": 4082,
+    "lastModificationSignature": "d2fd83f2c5167e638fd42f4e3f45acf8b24e2246fda53b982be0735b2c739d56",
+    "height": 225
+  }
+}

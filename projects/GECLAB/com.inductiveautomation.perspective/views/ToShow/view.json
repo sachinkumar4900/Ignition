@@ -1,0 +1,1002 @@
+{
+  "custom": {
+    "Energy": {},
+    "Water": {}
+  },
+  "params": {
+    "data": {
+      "end": "2025-12-16 15:15:25",
+      "metric": "WATER_CONSUMED",
+      "monthly": "false",
+      "spoken_text": "class 10 days water data",
+      "start": "2025-12-06 15:15:25"
+    }
+  },
+  "propConfig": {
+    "custom.Energy": {
+      "persistent": true
+    },
+    "custom.Energy.graph": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "EndDate": "{/root/Label.custom.dateData.end}",
+            "StartDate": "{/root/Label.custom.dateData.start}"
+          },
+          "queryPath": "graphenergy"
+        },
+        "type": "query"
+      }
+    },
+    "custom.Energy.guage": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "EndDate": "{/root/Label.custom.dateData.end}",
+            "StartDate": "{/root/Label.custom.dateData.start}"
+          },
+          "queryPath": "top1data"
+        },
+        "transforms": [
+          {
+            "code": "\t\t\n\t\t# \u0027value\u0027 is the dataset returned by the Named Query\n\t\tif value is None:\n\t\t    return 0  # or \u0027—\u0027\n\t\t\n\t\t# Defensive: ensure we actually have at least one row\n\t\ttry:\n\t\t    row_count \u003d value.getRowCount()\n\t\t    if row_count \u003d\u003d 0:\n\t\t        return 0  # or \u0027—\u0027\n\t\t    col_index \u003d value.getColumnIndex(\u0027EnergyConsumed\u0027)  # column name from your query\n\t\t    return value.getValueAt(0, col_index)\n\t\texcept:\n\t\t    return 0  # fallback if structure changes or column not found",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "custom.Energy.table": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "EndDate": "{/root/Label.custom.dateData.end}",
+            "StartDate": "{/root/Label.custom.dateData.start}"
+          },
+          "queryPath": "DailyConsumptionTableEnergy"
+        },
+        "type": "query"
+      }
+    },
+    "custom.Energy.total": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "EndDate": "{/root/Label.custom.dateData.end}",
+            "StartDate": "{/root/Label.custom.dateData.start}"
+          },
+          "queryPath": "MonthlyEnery"
+        },
+        "transforms": [
+          {
+            "code": "\t# Convert Dataset to a Python list of lists\n\tpyData \u003dsystem.dataset.toPyDataSet(value)\n\n\t# Sum the second column (index 1)\n\tcolumn_sum \u003d sum(row[1] for row in pyData)\n\treturn round(column_sum,0)",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "custom.Water": {
+      "persistent": true
+    },
+    "custom.Water.graph": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "EndDate": "{/root/Label.custom.dateData.end}",
+            "StartDate": "{/root/Label.custom.dateData.start}"
+          },
+          "queryPath": "graphwater"
+        },
+        "type": "query"
+      }
+    },
+    "custom.Water.guage": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "EndDate": "{/root/Label.custom.dateData.end}",
+            "StartDate": "{/root/Label.custom.dateData.start}"
+          },
+          "queryPath": "top1datawater"
+        },
+        "transforms": [
+          {
+            "code": "\t\t\n\t\t# \u0027value\u0027 is the dataset returned by the Named Query\n\t\tif value is None:\n\t\t    return 0  # or \u0027—\u0027\n\t\t\n\t\t# Defensive: ensure we actually have at least one row\n\t\ttry:\n\t\t    row_count \u003d value.getRowCount()\n\t\t    if row_count \u003d\u003d 0:\n\t\t        return 0  # or \u0027—\u0027\n\t\t    col_index \u003d value.getColumnIndex(\u0027EnergyConsumed\u0027)  # column name from your query\n\t\t    return value.getValueAt(0, col_index)\n\t\texcept:\n\t\t    return 0  # fallback if structure changes or column not found",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "custom.Water.table": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "EndDate": "{/root/Label.custom.dateData.end}",
+            "StartDate": "{/root/Label.custom.dateData.start}"
+          },
+          "queryPath": "DailyConsumptionTableWater"
+        },
+        "type": "query"
+      }
+    },
+    "custom.Water.total": {
+      "binding": {
+        "config": {
+          "parameters": {
+            "EndDate": "{/root/Label.custom.dateData.end}",
+            "StartDate": "{/root/Label.custom.dateData.start}"
+          },
+          "queryPath": "MonthlyWaterDemo"
+        },
+        "transforms": [
+          {
+            "code": "\t# Convert Dataset to a Python list of lists\n\tpyData \u003dsystem.dataset.toPyDataSet(value)\n\n\t# Sum the second column (index 1)\n\tcolumn_sum \u003d sum(row[1] for row in pyData)\n\treturn round(column_sum,0)",
+            "type": "script"
+          }
+        ],
+        "type": "query"
+      }
+    },
+    "params.data": {
+      "binding": {
+        "config": {
+          "fallbackDelay": 2.5,
+          "mode": "direct",
+          "tagPath": "[default]ReadWriteWebDevTag"
+        },
+        "transforms": [
+          {
+            "code": "\t\n\t# value: the incoming string from your tag or expression\n\t# Goal: return a Python dict so Perspective treats the param as a JSON object\n\t\n\ttry:\n\t    # Normalize input to a clean string\n\t    s \u003d (value if value is not None else \u0027\u0027).strip()\n\t\n\t    # Handle empty or \u0027null\u0027 cases defensively\n\t    if not s or s.lower() \u003d\u003d \u0027null\u0027:\n\t        # Return an empty object or a default structure as needed\n\t        return {}\n\t\n\t    # Decode JSON string to Python dict (Perspective-friendly object)\n\t    obj \u003d system.util.jsonDecode(s)\n\t\n\t    # Optional sanity fixes:\n\t    # If you expect keys metric/start/end, ensure they exist\n\t    if not isinstance(obj, dict):\n\t        # In case a list or other type arrives; wrap minimally\n\t        return {\"data\": obj}\n\t\n\t    # You can enforce uppercase metric if you want consistency\n\t    if \"metric\" in obj and isinstance(obj[\"metric\"], str):\n\t        obj[\"metric\"] \u003d obj[\"metric\"].strip().upper()\n\t\n\t    return obj\n\t\n\texcept Exception as e:\n\t    # Log for troubleshooting and return a safe fallback object\n\t    system.util.getLogger(\"QueryJSON\").warn(\"JSON decode failed: {}\".format(e))",
+            "type": "script"
+          }
+        ],
+        "type": "tag"
+      },
+      "paramDirection": "inout",
+      "persistent": true
+    }
+  },
+  "props": {},
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Image"
+        },
+        "position": {
+          "height": 0.34,
+          "width": 0.4225,
+          "x": 0.5786,
+          "y": 0.114
+        },
+        "props": {
+          "fit": {
+            "mode": "fill"
+          },
+          "source": "/system/images/FM.png"
+        },
+        "type": "ia.display.image"
+      },
+      {
+        "meta": {
+          "contextMenu": {
+            "style": {
+              "borderStyle": "groove"
+            }
+          },
+          "name": "TimeSeriesChart"
+        },
+        "position": {
+          "height": 0.3213,
+          "width": 0.5347,
+          "x": 0.4676,
+          "y": 0.6247
+        },
+        "propConfig": {
+          "props.plots[0].trends[0].columns[0].key": {
+            "binding": {
+              "config": {
+                "bidirectional": true,
+                "path": "../Label.custom.dateData.metric"
+              },
+              "type": "property"
+            }
+          },
+          "props.series[0].data": {
+            "binding": {
+              "config": {
+                "expression": "if(\r\n    {../Label.custom.dateData.metric} \u003d \"WATER_CONSUMED\",\r\n    {view.custom.Water.graph},\r\n    {view.custom.Energy.graph}\r\n)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "plots": [
+            {
+              "axes": [
+                {
+                  "alignment": "left",
+                  "grid": {
+                    "color": "",
+                    "dashArray": 0,
+                    "opacity": 0.9,
+                    "style": {
+                      "classes": ""
+                    },
+                    "visible": false
+                  },
+                  "label": {
+                    "font": {
+                      "color": "#00ACAC",
+                      "size": 14
+                    },
+                    "offset": 0,
+                    "style": {
+                      "classes": ""
+                    },
+                    "text": "Units",
+                    "visible": true
+                  },
+                  "max": 320,
+                  "min": 0,
+                  "name": "W/hr",
+                  "style": {
+                    "classes": ""
+                  },
+                  "tick": {
+                    "color": "#00ACAC",
+                    "count": 3,
+                    "label": {
+                      "font": {
+                        "color": "#00ACAC",
+                        "size": 12
+                      },
+                      "format": "Auto",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "style": {
+                      "classes": ""
+                    }
+                  },
+                  "width": 60
+                }
+              ],
+              "markers": [],
+              "relativeWeight": 1,
+              "trends": [
+                {
+                  "axis": "W/hr",
+                  "baselines": [],
+                  "breakLine": true,
+                  "columns": [
+                    {
+                      "color": "#FF8C00",
+                      "styles": {
+                        "highlighted": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "muted": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "normal": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": 3
+                          }
+                        },
+                        "selected": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "interpolation": "curveLinear",
+                  "radius": 2,
+                  "series": "Consumption",
+                  "stack": true,
+                  "type": "line",
+                  "visible": true
+                }
+              ]
+            }
+          ],
+          "series": [
+            {
+              "name": "Consumption"
+            }
+          ],
+          "style": {
+            "borderBottomLeftRadius": "10px",
+            "borderBottomRightRadius": "10px",
+            "borderStyle": "solid",
+            "borderTopLeftRadius": "10px",
+            "borderTopRightRadius": "10px"
+          },
+          "timeAxis": {
+            "tick": {
+              "color": "#00ACAC",
+              "label": {
+                "font": {
+                  "color": "#00ACAC",
+                  "size": 14
+                },
+                "format": "MM/DD/YY"
+              }
+            },
+            "tickCount": 5
+          },
+          "timeRange": {
+            "visible": false
+          }
+        },
+        "type": "ia.chart.timeseries"
+      },
+      {
+        "events": {
+          "dom": {
+            "onDoubleClick": {
+              "config": {
+                "draggable": true,
+                "id": "nRSkxtEo",
+                "modal": false,
+                "overlayDismiss": false,
+                "resizable": true,
+                "showCloseIcon": true,
+                "type": "open",
+                "viewPath": "NestedView/DailyConsumptionTable",
+                "viewportBound": false
+              },
+              "scope": "C",
+              "type": "popup"
+            }
+          }
+        },
+        "meta": {
+          "name": "Table"
+        },
+        "position": {
+          "height": 0.3149,
+          "width": 0.4625,
+          "x": 0.0022,
+          "y": 0.6284
+        },
+        "propConfig": {
+          "props.data": {
+            "binding": {
+              "config": {
+                "expression": "if(\r\n    {../Label.custom.dateData.metric} \u003d \"WATER_CONSUMED\",\r\n    {view.custom.Water.table},\r\n    {view.custom.Energy.table}\r\n)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "columns": [
+            {
+              "align": "center",
+              "boolean": "checkbox",
+              "dateFormat": "MM/DD/YY",
+              "editable": false,
+              "field": "ConsumptionDate",
+              "filter": {
+                "boolean": {
+                  "condition": ""
+                },
+                "date": {
+                  "condition": "",
+                  "value": ""
+                },
+                "enabled": false,
+                "number": {
+                  "condition": "",
+                  "value": ""
+                },
+                "string": {
+                  "condition": "",
+                  "value": ""
+                },
+                "visible": "on-hover"
+              },
+              "footer": {
+                "align": "center",
+                "justify": "left",
+                "style": {
+                  "classes": ""
+                },
+                "title": ""
+              },
+              "header": {
+                "align": "center",
+                "justify": "center",
+                "style": {
+                  "classes": "",
+                  "fontSize": 18
+                },
+                "title": "Date"
+              },
+              "justify": "center",
+              "nullFormat": {
+                "includeNullStrings": false,
+                "nullFormatValue": "",
+                "strict": false
+              },
+              "number": "value",
+              "numberFormat": "0,0.##",
+              "progressBar": {
+                "bar": {
+                  "color": "",
+                  "style": {
+                    "classes": ""
+                  }
+                },
+                "max": 100,
+                "min": 0,
+                "track": {
+                  "color": "",
+                  "style": {
+                    "classes": ""
+                  }
+                },
+                "value": {
+                  "enabled": true,
+                  "format": "0,0.##",
+                  "justify": "center",
+                  "style": {
+                    "classes": ""
+                  }
+                }
+              },
+              "render": "auto",
+              "resizable": true,
+              "sort": "none",
+              "sortable": false,
+              "strictWidth": false,
+              "style": {
+                "classes": "",
+                "fontSize": 18
+              },
+              "toggleSwitch": {
+                "color": {
+                  "selected": "",
+                  "unselected": ""
+                }
+              },
+              "viewParams": {},
+              "viewPath": "",
+              "visible": true,
+              "width": ""
+            },
+            {
+              "align": "center",
+              "boolean": "checkbox",
+              "dateFormat": "MM/DD/YYYY",
+              "editable": false,
+              "field": "EnergyConsumed",
+              "filter": {
+                "boolean": {
+                  "condition": ""
+                },
+                "date": {
+                  "condition": "",
+                  "value": ""
+                },
+                "enabled": false,
+                "number": {
+                  "condition": "",
+                  "value": ""
+                },
+                "string": {
+                  "condition": "",
+                  "value": ""
+                },
+                "visible": "on-hover"
+              },
+              "footer": {
+                "align": "center",
+                "justify": "left",
+                "style": {
+                  "classes": ""
+                },
+                "title": ""
+              },
+              "header": {
+                "align": "center",
+                "justify": "center",
+                "style": {
+                  "classes": "",
+                  "fontSize": 18
+                },
+                "title": "Energy (Units)"
+              },
+              "justify": "center",
+              "nullFormat": {
+                "includeNullStrings": false,
+                "nullFormatValue": "",
+                "strict": false
+              },
+              "number": "value",
+              "numberFormat": "0,0.##",
+              "progressBar": {
+                "bar": {
+                  "color": "",
+                  "style": {
+                    "classes": ""
+                  }
+                },
+                "max": 100,
+                "min": 0,
+                "track": {
+                  "color": "",
+                  "style": {
+                    "classes": ""
+                  }
+                },
+                "value": {
+                  "enabled": true,
+                  "format": "0,0.##",
+                  "justify": "center",
+                  "style": {
+                    "classes": ""
+                  }
+                }
+              },
+              "render": "auto",
+              "resizable": true,
+              "sort": "none",
+              "sortable": false,
+              "strictWidth": false,
+              "style": {
+                "classes": "",
+                "color": "#FF8C00",
+                "fontSize": 18
+              },
+              "toggleSwitch": {
+                "color": {
+                  "selected": "",
+                  "unselected": ""
+                }
+              },
+              "viewParams": {},
+              "viewPath": "",
+              "visible": true,
+              "width": ""
+            }
+          ],
+          "pager": {
+            "activeOption": 5,
+            "bottom": false
+          },
+          "selection": {
+            "enableRowSelection": false,
+            "style": {
+              "borderBottomLeftRadius": "5px",
+              "borderBottomRightRadius": "5px",
+              "borderStyle": "groove",
+              "borderTopLeftRadius": "5px",
+              "borderTopRightRadius": "5px",
+              "fontSize": 18
+            }
+          },
+          "style": {
+            "borderBottomLeftRadius": "10px",
+            "borderBottomRightRadius": "10px",
+            "borderStyle": "groove",
+            "borderTopLeftRadius": "10px",
+            "borderTopRightRadius": "10px",
+            "fontSize": 12,
+            "outlineStyle": "groove"
+          }
+        },
+        "type": "ia.display.table"
+      },
+      {
+        "meta": {
+          "name": "SimpleGauge"
+        },
+        "position": {
+          "height": 0.3625,
+          "width": 0.4813,
+          "x": 0.0054,
+          "y": 0.1191
+        },
+        "propConfig": {
+          "props.value": {
+            "binding": {
+              "config": {
+                "expression": "toFloat(\r\n  if(\r\n    {../Label.custom.dateData.metric} \u003d \"WATER_CONSUMED\",\r\n    {view.custom.Water.guage}[0, \"value\"],\r\n    {view.custom.Energy.guage}[0, \"value\"]\r\n  )\r\n)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "animate": true,
+          "arc": {
+            "color": "#47FF47"
+          },
+          "arcBackground": {
+            "color": "#8AFFFF"
+          },
+          "endAngle": 405,
+          "label": {
+            "color": "#FF8C00",
+            "maxDecimal": 2,
+            "offsetY": 12,
+            "size": 29
+          },
+          "maxValue": 350,
+          "startAngle": 135,
+          "style": {
+            "borderBottomLeftRadius": "10px",
+            "borderBottomRightRadius": "10px",
+            "borderStyle": "solid",
+            "borderTopLeftRadius": "10px",
+            "borderTopRightRadius": "10px"
+          }
+        },
+        "type": "ia.chart.simple-gauge"
+      },
+      {
+        "events": {
+          "dom": {
+            "onDoubleClick": {
+              "config": {
+                "draggable": false,
+                "id": "8NpPttpe",
+                "modal": false,
+                "overlayDismiss": false,
+                "resizable": true,
+                "showCloseIcon": false,
+                "type": "open",
+                "viewPath": "EnergyMonthpopup",
+                "viewportBound": false
+              },
+              "scope": "C",
+              "type": "popup"
+            }
+          }
+        },
+        "meta": {
+          "name": "Label_10"
+        },
+        "position": {
+          "height": 0.0476,
+          "rotate": {
+            "anchor": "-94% -231%"
+          },
+          "width": 0.9912,
+          "x": 0.0047,
+          "y": 0.9495
+        },
+        "props": {
+          "style": {
+            "borderBottomLeftRadius": "10px",
+            "borderBottomRightRadius": "10px",
+            "borderStyle": "solid",
+            "borderTopLeftRadius": "10px",
+            "borderTopRightRadius": "10px",
+            "fontSize": 20,
+            "paddingLeft": "10px",
+            "textAlign": "left"
+          },
+          "text": "TOTAL"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_4"
+        },
+        "position": {
+          "height": 0.0315,
+          "rotate": {
+            "anchor": "-94% -231%"
+          },
+          "width": 0.0575,
+          "x": 0.8738,
+          "y": 0.9585
+        },
+        "propConfig": {
+          "props.text": {
+            "binding": {
+              "config": {
+                "expression": "if({../Label.custom.dateData.metric} \u003d \u0027WATER_CONSUMED\u0027, \u0027Kl\u0027, \u0027Units\u0027)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "fontSize": 15
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_5"
+        },
+        "position": {
+          "height": 0.0355,
+          "rotate": {
+            "anchor": "-94% -231%"
+          },
+          "width": 0.085,
+          "x": 0.741,
+          "y": 0.9567
+        },
+        "propConfig": {
+          "props.text": {
+            "binding": {
+              "config": {
+                "expression": "toFloat(\r\n  if(\r\n    {../Label.custom.dateData.metric} \u003d \"WATER_CONSUMED\",\r\n    {view.custom.Water.total}[0, \"value\"],\r\n    {view.custom.Energy.total}[0, \"value\"]\r\n  )\r\n)\r\n"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "color": "#FF8C00",
+            "fontSize": 30,
+            "textAlign": "right"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label"
+        },
+        "position": {
+          "height": 0.0617,
+          "rotate": {
+            "anchor": "50% 155%"
+          },
+          "width": 0.9962,
+          "x": 0.0022,
+          "y": 0.5601
+        },
+        "propConfig": {
+          "custom.dateData": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 1,
+                "mode": "direct",
+                "tagPath": "[default]ReadWriteWebDevTag"
+              },
+              "transforms": [
+                {
+                  "code": "\t\n\t# value: the incoming string from your tag or expression\n\t# Goal: return a Python dict so Perspective treats the param as a JSON object\n\t\n\ttry:\n\t    # Normalize input to a clean string\n\t    s \u003d (value if value is not None else \u0027\u0027).strip()\n\t\n\t    # Handle empty or \u0027null\u0027 cases defensively\n\t    if not s or s.lower() \u003d\u003d \u0027null\u0027:\n\t        # Return an empty object or a default structure as needed\n\t        return {}\n\t\n\t    # Decode JSON string to Python dict (Perspective-friendly object)\n\t    obj \u003d system.util.jsonDecode(s)\n\t\n\t    # Optional sanity fixes:\n\t    # If you expect keys metric/start/end, ensure they exist\n\t    if not isinstance(obj, dict):\n\t        # In case a list or other type arrives; wrap minimally\n\t        return {\"data\": obj}\n\t\n\t    # You can enforce uppercase metric if you want consistency\n\t    if \"metric\" in obj and isinstance(obj[\"metric\"], str):\n\t        obj[\"metric\"] \u003d obj[\"metric\"].strip().upper()\n\t\n\t    return obj\n\t\n\texcept Exception as e:\n\t    # Log for troubleshooting and return a safe fallback object\n\t    system.util.getLogger(\"QueryJSON\").warn(\"JSON decode failed: {}\".format(e))",
+                  "type": "script"
+                }
+              ],
+              "type": "tag"
+            }
+          },
+          "props.text": {
+            "binding": {
+              "config": {
+                "expression": "\"Showing \" + {this.custom.dateData.metric} + \" data from [ \" + {this.custom.dateData.start} + \" ] to [ \" + {this.custom.dateData.end}+\" ]\""
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "borderBottomLeftRadius": 10,
+            "borderBottomRightRadius": 10,
+            "borderStyle": "solid",
+            "borderTopLeftRadius": 10,
+            "borderTopRightRadius": 10,
+            "fontSize": 15,
+            "textAlign": "center"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "TextField"
+        },
+        "position": {
+          "height": 0.0617,
+          "width": 0.995,
+          "x": 0.0036,
+          "y": 0.4956
+        },
+        "propConfig": {
+          "props.text": {
+            "binding": {
+              "config": {
+                "path": "../Label.custom.dateData.spoken_text"
+              },
+              "transforms": [
+                {
+                  "code": "\t\n\t# value: incoming bound value\n\t# return a safe string instead of error\n\tif value in (None, \u0027\u0027, \u0027null\u0027):\n\t    return \u0027 \u0027  # or \u0027\u0027 to show nothing\n\treturn str(value)",
+                  "type": "script"
+                }
+              ],
+              "type": "property"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "borderBottomLeftRadius": 10,
+            "borderBottomRightRadius": 10,
+            "borderStyle": "solid",
+            "borderTopLeftRadius": 10,
+            "borderTopRightRadius": 10,
+            "color": "#00FFFF",
+            "cursor": "text",
+            "fontFamily": "Roboto",
+            "fontSize": 22,
+            "overflow": "visible",
+            "overflowX": "visible",
+            "overflowY": "visible",
+            "textAlign": "center"
+          }
+        },
+        "type": "ia.input.text-field"
+      },
+      {
+        "meta": {
+          "name": "Label_0"
+        },
+        "position": {
+          "height": 0.0374,
+          "rotate": {
+            "anchor": "25% 297%"
+          },
+          "width": 0.2537,
+          "x": 0.117,
+          "y": 0.1246
+        },
+        "propConfig": {
+          "props.text": {
+            "binding": {
+              "config": {
+                "expression": "if({../Label.custom.dateData.metric} \u003d \u0027WATER_CONSUMED\u0027, \u0027Water\u0027, \u0027Energy\u0027)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "fontSize": 20,
+            "textAlign": "center"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "IFrame"
+        },
+        "position": {
+          "height": 0.0913,
+          "width": 0.9884,
+          "x": 0.0041,
+          "y": 0.0045
+        },
+        "propConfig": {
+          "props.src": {
+            "binding": {
+              "config": {
+                "expression": "{session.props.gateway.address}+\u0027/system/webdev/GECLAB/Speak/speechtotext\u0027"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "borderStyle": "solid"
+          }
+        },
+        "type": "ia.display.iframe"
+      },
+      {
+        "meta": {
+          "name": "Image_0"
+        },
+        "position": {
+          "height": 0.0803,
+          "width": 0.0912,
+          "x": 0.2013,
+          "y": 0.3076
+        },
+        "propConfig": {
+          "meta.visible": {
+            "binding": {
+              "config": {
+                "expression": "if({../Label.custom.dateData} \u003d \u0027ENERGY CONSUMED\u0027,1,0)"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "fit": {
+            "mode": "fill"
+          },
+          "source": "/system/images/energy.jpg"
+        },
+        "type": "ia.display.image"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "propConfig": {
+      "custom.metrics": {
+        "binding": {
+          "config": {
+            "bidirectional": true,
+            "path": "./Label.custom.dateData.metric"
+          },
+          "type": "property"
+        }
+      },
+      "custom.monthly": {
+        "binding": {
+          "config": {
+            "bidirectional": true,
+            "path": "./Label.custom.dateData.monthly"
+          },
+          "type": "property"
+        },
+        "onChange": {
+          "enabled": null,
+          "script": "\tmonthly_flag \u003d self.custom.monthly\n\tmetric \u003d (self.custom.metrics or \u0027\u0027).strip().upper()\n\tpopup_id \u003d \u0027Popup\u0027\n\tif monthly_flag:\n\t\tif metric \u003d\u003d \u0027WATER_CONSUMED\u0027:\n\t\t\tview_path \u003d \u0027WaterMonthpopup\u0027\n        else:\n        \tview_path \u003d \u0027EnergyMonthpopup\u0027\n        \tsystem.perspective.openPopup(\n        \tid\u003dpopup_id,\n        \tview\u003dview_path)"
+        }
+      }
+    },
+    "props": {
+      "mode": "percent"
+    },
+    "type": "ia.container.coord"
+  }
+}

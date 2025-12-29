@@ -1,0 +1,157 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 300,
+      "width": 343
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Label_4"
+        },
+        "position": {
+          "height": 0.0847,
+          "rotate": {
+            "anchor": "-94% -231%"
+          },
+          "width": 0.6997,
+          "x": 0.1336,
+          "y": 0.0458
+        },
+        "props": {
+          "style": {
+            "color": "#FF8C00"
+          },
+          "text": "Try speaking below commands"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label"
+        },
+        "position": {
+          "height": 0.0867,
+          "width": 0.71,
+          "x": 0.2175,
+          "y": 0.2002
+        },
+        "props": {
+          "text": "1. last \u0027n\u0027 days"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_0"
+        },
+        "position": {
+          "height": 0.0867,
+          "width": 0.71,
+          "x": 0.2175,
+          "y": 0.2959
+        },
+        "props": {
+          "text": "2. last \u0027n\u0027 month"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_1"
+        },
+        "position": {
+          "height": 0.0867,
+          "width": 0.71,
+          "x": 0.2175,
+          "y": 0.3916
+        },
+        "props": {
+          "text": "3. last month / last day"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_2"
+        },
+        "position": {
+          "height": 0.0867,
+          "width": 0.71,
+          "x": 0.2175,
+          "y": 0.4873
+        },
+        "props": {
+          "text": "4. previous day / yesterday"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_3"
+        },
+        "position": {
+          "height": 0.0867,
+          "width": 0.71,
+          "x": 0.2175,
+          "y": 0.583
+        },
+        "props": {
+          "text": "5. today / current day"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_5"
+        },
+        "position": {
+          "height": 0.0867,
+          "width": 0.71,
+          "x": 0.2175,
+          "y": 0.6754
+        },
+        "props": {
+          "text": "6. from [1 Oct] to [15 Oct]"
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Label_6"
+        },
+        "position": {
+          "height": 0.0867,
+          "width": 0.8627,
+          "x": 0.0649,
+          "y": 0.8191
+        },
+        "props": {
+          "style": {
+            "textAlign": "center"
+          },
+          "text": "You can ask for \u0027Energy\u0027 or \u0027Water\u0027"
+        },
+        "type": "ia.display.label"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "mode": "percent",
+      "style": {
+        "borderBottomLeftRadius": 10,
+        "borderBottomRightRadius": 10,
+        "borderStyle": "solid",
+        "borderTopLeftRadius": 10,
+        "borderTopRightRadius": 10
+      }
+    },
+    "type": "ia.container.coord"
+  }
+}

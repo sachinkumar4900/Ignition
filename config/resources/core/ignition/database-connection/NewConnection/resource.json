@@ -1,0 +1,19 @@
+{
+  "scope": "A",
+  "description": "",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "config.json"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "admin_IoT_Lab",
+      "timestamp": "2025-12-04T10:42:21Z"
+    },
+    "uuid": "c8196183-1963-428f-ad73-2c7e83635fee",
+    "lastModificationSignature": "c7aaf94a331bffbb501a672569c52d9423c5fa6525652e1669a7f7bd92ed56be",
+    "enabled": true
+  }
+}

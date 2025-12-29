@@ -1,0 +1,7 @@
+SELECT TOP 1
+    [WATER_CONSUMED] AS WaterConsumed
+FROM CONSUMPTION
+WHERE 
+    [DateTime] BETWEEN :StartDate AND :EndDate
+    AND CAST([DateTime] AS TIME) = '00:00:00'
+ORDER BY [DateTime] DESC;

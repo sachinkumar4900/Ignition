@@ -1,0 +1,16 @@
+{
+  "scope": "G",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "props.json"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "Ishita",
+      "timestamp": "2025-11-02T15:36:13Z"
+    },
+    "lastModificationSignature": "74417f78910ae07cc900a04841e5751b45b9e5344933a7f65362aeae4339825c"
+  }
+}

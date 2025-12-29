@@ -1,0 +1,71 @@
+{
+  "profile": {
+    "readOnly": false,
+    "type": "com.inductiveautomation.OpcUaServerType"
+  },
+  "settings": {
+    "advanced": {
+      "acknowledgeTimeout": 5000,
+      "browseOrigin": "OBJECTS_FOLDER",
+      "connectTimeout": 5000,
+      "maxArrayLength": 2147483647,
+      "maxMessageSize": 33554432,
+      "maxNotificationsPerPublish": 65535,
+      "maxPendingPublishRequests": 2,
+      "maxPerOperation": 8192,
+      "maxReferencesPerNode": 8192,
+      "maxStringLength": 2147483647,
+      "requestTimeout": 60000,
+      "sessionTimeout": 120000
+    },
+    "authentication": {
+      "password": {
+        "data": {
+          "ciphertext": "PVN5W7c-HdGN9w",
+          "encrypted_key": "7ohn3j60B-u85jcJJ2dD3zDMT7mP37tsESosTdnbVC-UGOAur5hSHw",
+          "iv": "ljU6-vEMOB9P7oMG",
+          "protected": "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2R0NNIiwiaWF0IjoxNzYyNDA5MjExLCJ6aXAiOiJERUYifQ",
+          "tag": "IdBdBDv51bbzBMRcIHGiZQ"
+        },
+        "type": "Embedded"
+      },
+      "username": "opcuauser"
+    },
+    "deprecatedDataTypeDictionarySupportEnabled": false,
+    "endpoint": {
+      "discoveryUrl": "opc.tcp://localhost:62541/discovery",
+      "endpointUrl": "opc.tcp://localhost:62541",
+      "hostOverride": "",
+      "securityMode": "SignAndEncrypt",
+      "securityPolicy": "Basic256Sha256"
+    },
+    "failover": {
+      "discoveryUrl": "",
+      "enabled": false,
+      "endpointUrl": "",
+      "hostOverride": "",
+      "threshold": 3
+    },
+    "keepAlive": {
+      "failuresAllowed": 1,
+      "interval": 15000,
+      "timeout": 10000
+    },
+    "security": {
+      "certificateValidationEnabled": true,
+      "keyStoreAlias": "client",
+      "keyStoreAliasPassword": {
+        "data": {
+          "ciphertext": "JzR6nwbCAXdYcw",
+          "encrypted_key": "x4bGetRd_0v2icNSqVlEOH2jMVyp9kHUSsfRl4rnGReWf8z-EitJ6Q",
+          "iv": "jVLlCRoZXISY_hdd",
+          "protected": "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2R0NNIiwiaWF0IjoxNzYyNDA5MjExLCJ6aXAiOiJERUYifQ",
+          "tag": "n4t3fX29F9ny8FnB2Gq22Q"
+        },
+        "type": "Embedded"
+      }
+    },
+    "typeDictionaryFragmentSize": 8192,
+    "version": 2
+  }
+}

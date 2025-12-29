@@ -1,0 +1,17 @@
+{
+  "scope": "G",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "onStartup.py"
+  ],
+  "attributes": {
+    "lastModificationSignature": "69f15e2499ff3f0951475affdef66ec09ab75e37a5dab80558c873e984853232",
+    "lastModification": {
+      "actor": "admin_IoT_Lab",
+      "timestamp": "2025-11-27T06:24:40Z"
+    },
+    "enabled": true
+  }
+}

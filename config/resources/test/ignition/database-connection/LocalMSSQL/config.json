@@ -1,0 +1,36 @@
+{
+  "connectURL": "jdbc:sqlserver://localhost\\MSSQLSERVER:1433",
+  "connectionProps": "databaseName\u003dIgnition",
+  "connectionResetParams": "",
+  "defaultTransactionLevel": "DEFAULT",
+  "driver": "Microsoft SQLServer",
+  "evictionRate": -1,
+  "evictionTests": 3,
+  "evictionTime": 1800000,
+  "failoverMode": "STANDARD",
+  "failoverProfile": "",
+  "includeSchemaInTableName": false,
+  "password": {
+    "data": {
+      "ciphertext": "vtzfHr0kSlTGAq5k2_7APzjZ",
+      "encrypted_key": "TJL4DyC_BTFoBZPI2zJE-nrta4GPLnpEKhZPJDRVb904dxt4_lzKag",
+      "iv": "O9OxQ6SRHPagzfql",
+      "protected": "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2R0NNIiwiaWF0IjoxNzY2MDUwNjYyLCJ6aXAiOiJERUYifQ",
+      "tag": "MAxJ6ySRlCo4FVcpE4KWSg"
+    },
+    "type": "Embedded"
+  },
+  "poolInitSize": 0,
+  "poolMaxActive": 8,
+  "poolMaxIdle": 8,
+  "poolMaxWait": 5000,
+  "poolMinIdle": 0,
+  "slowQueryLogThreshold": 60000,
+  "testOnBorrow": true,
+  "testOnReturn": false,
+  "testWhileIdle": false,
+  "translator": "MSSQL",
+  "username": "sa",
+  "validationQuery": "SELECT 1",
+  "validationSleepTime": 10000
+}
